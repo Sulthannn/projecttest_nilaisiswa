@@ -30,6 +30,7 @@ Alasan memilih model digabung:
 ### Instalasi
 ```bash
 git clone https://github.com/Sulthannn/projecttest_nilaisiswa.git
+cd projecttest_nilaisiswa
 composer install
 cp .env.example .env
 php artisan key:generate
@@ -53,4 +54,4 @@ Password: `admin123`
 ```bash
 npm run build
 ```
-File hasil akan berada di `public/build`.
+File hasil akan berada di `public/build`
