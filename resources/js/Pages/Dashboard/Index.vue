@@ -145,6 +145,7 @@ const siswaQuery = ref('')
 const siswaOptions = ref([])
 const loadingSiswa = ref(false)
 let fetchTimeout
+const noSiswa = computed(()=> !loadingSiswa.value && siswaOptions.value.length === 0)
 function fetchSiswa(){
   loadingSiswa.value = true
   fetch(route('siswa.options', { q: siswaQuery.value }))
@@ -328,11 +329,20 @@ function clearSiswa(){
           <div id="siswa-autocomplete-wrapper" class="flex flex-col gap-1 relative">
             <label class="text-xs font-medium text-gray-500">Siswa</label>
             <div class="relative">
-              <input v-model="siswaQuery" @focus="showSiswaDropdown=true" placeholder="Ketik nama siswa..." class="border rounded-lg w-full pr-8 px-3 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none" :class="fNilai.errors.siswa_id && 'border-red-500'">
-              <button v-if="siswaQuery" type="button" @click="clearSiswa" class="absolute inset-y-0 right-0 px-2 text-gray-400 hover:text-gray-600">&times;</button>
+              <input
+                v-model="siswaQuery"
+                @focus="!noSiswa && (showSiswaDropdown=true)"
+                placeholder="Ketik nama siswa..."
+                :disabled="noSiswa"
+                :readonly="noSiswa"
+                class="border rounded-lg w-full pr-8 px-3 py-2 focus:ring-2 focus:ring-indigo-400 focus:outline-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                :class="[fNilai.errors.siswa_id && 'border-red-500']"
+              >
+              <button v-if="siswaQuery && !noSiswa" type="button" @click="clearSiswa" class="absolute inset-y-0 right-0 px-2 text-gray-400 hover:text-gray-600">&times;</button>
             </div>
             <input type="hidden" :value="fNilai.siswa_id" />
             <p v-if="fNilai.errors.siswa_id" class="text-xs text-red-600">{{ fNilai.errors.siswa_id }}</p>
+            <p v-else-if="noSiswa" class="text-xs text-amber-600">Belum ada data siswa. Tambahkan siswa terlebih dahulu.</p>
             <div v-if="showSiswaDropdown" class="absolute z-50 mt-1 w-full bg-white border rounded-md shadow max-h-56 overflow-auto">
               <div class="p-2 text-xs text-gray-500" v-if="loadingSiswa">Memuat...</div>
               <template v-else>
